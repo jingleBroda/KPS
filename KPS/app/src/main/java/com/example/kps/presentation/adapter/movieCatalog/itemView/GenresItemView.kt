@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class GenresItemView constructor(
     private val genresName:String,
-    private val switcher: GenresSwitchHelper,
+    private val switcher: GenresSwitchHelper, //private
     allFilms: ApiModel
     ):BasicItemView {
 
@@ -31,7 +31,6 @@ class GenresItemView constructor(
 
         genresViewHolder.itemView.setOnClickListener{
             setActiveItemView()
-            switcher.replaceActiveGenresItemView(this)
             getMovieListLiamda?.invoke(concreteGenresFilm)
         }
     }
@@ -53,6 +52,7 @@ class GenresItemView constructor(
 
     fun setActiveItemView(){
         genresViewHolder.itemView.setBackgroundResource(R.drawable.background_row_active)
+        switcher.replaceActiveGenresItemView(this)
     }
 
     fun setNonActiveItemView(){

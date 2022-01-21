@@ -19,42 +19,20 @@ class MovieCatalogRecyclerViewAdapter(private var typeItemView:MutableList<Basic
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        //тут нужно сделать обработку null в будущем
         return MovieCatalogViewHolderFactory.create(parent, viewType)!!
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         typeItemView[position].onBindVIewHolder(holder)
-        if(typeItemView[position].getItemViewType() == BasicItemView.GENRES_ITEM_VIEW){
-            val asGenresType = typeItemView[position] as GenresItemView
-            asGenresType.getMovieList { movie->
-                reloadDataAdapter(movie)
-            }
-        }
-    }
-
-    private fun reloadDataAdapter(movie: MutableList<FilmsModel>){
-        //мысль на потом, нужно сделать обновление адаптера из вне (в фрагменте), мб это устранит эксепшн
-
-        /*
-        for(i in typeItemView.indices){//i in typeItemView
-            if(typeItemView[i].getItemViewType() == BasicItemView.MOVIE_ITEM_VIEW)
-            {
-                typeItemView.remove(typeItemView[i])
-            }
-        }
-
-        for(i in movie.indices){
-            val movieItemView = MovieItemView(movie[i].name, movie[i].image_url)
-            typeItemView.add(movieItemView)
-        }
-        notifyDataSetChanged()
-
-         */
     }
 
     override fun getItemCount(): Int {
        return typeItemView.size
+    }
+
+    fun reloadDataAdapter(newTypeItemView:MutableList<BasicItemView>){
+        typeItemView = newTypeItemView
+        notifyDataSetChanged()
     }
 
 
