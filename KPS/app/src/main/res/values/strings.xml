@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">KPS</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="genres_deff">Категория</string>
+    <string name="header_deff">Заголовок</string>
+    <string name="movie_deff">Название Фильма</string>
+</resources>
