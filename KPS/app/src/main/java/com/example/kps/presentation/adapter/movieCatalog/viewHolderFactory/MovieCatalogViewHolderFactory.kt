@@ -8,6 +8,7 @@ import android.view.ViewGroup
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.kps.R
 import com.example.kps.databinding.GenresItemviewBinding
 import com.example.kps.databinding.HeaderItemviewBinding
 import com.example.kps.databinding.MovieItemviewBinding
@@ -42,7 +43,7 @@ class MovieCatalogViewHolderFactory {
             Glide
                 .with(binding.movieImg)
                 .load(urlImg)
-                .placeholder(com.example.kps.R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.ic_launcher_foreground)
                 .centerCrop()
                 .into(binding.movieImg)
         }
@@ -55,7 +56,7 @@ class MovieCatalogViewHolderFactory {
                     val inflater = LayoutInflater.from(parent.context)
                     return GenresViewHolder(
                         inflater.inflate(
-                            com.example.kps.R.layout.genres_itemview,
+                            R.layout.genres_itemview,
                             parent,
                             false
                         )
@@ -65,7 +66,7 @@ class MovieCatalogViewHolderFactory {
                     val inflater = LayoutInflater.from(parent.context)
                     return HeaderViewHolder(
                         inflater.inflate(
-                            com.example.kps.R.layout.header_itemview,
+                            R.layout.header_itemview,
                             parent,
                             false
                         )
@@ -75,7 +76,7 @@ class MovieCatalogViewHolderFactory {
                     val inflater = LayoutInflater.from(parent.context)
                     return MovieViewHolder(
                         inflater.inflate(
-                            com.example.kps.R.layout.movie_itemview,
+                            R.layout.movie_itemview,
                             parent,
                             false
                         )

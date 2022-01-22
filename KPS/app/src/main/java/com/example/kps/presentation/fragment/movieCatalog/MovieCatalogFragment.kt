@@ -17,6 +17,7 @@ import com.example.kps.presentation.adapter.movieCatalog.itemView.BasicItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.GenresItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.HeaderItemView
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import com.example.kps.domain.model.FilmsModel
 import com.example.kps.presentation.adapter.movieCatalog.itemView.GenresSwitchHelper
 import com.example.kps.presentation.adapter.movieCatalog.itemView.MovieItemView
 
@@ -29,9 +30,8 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
 
     private lateinit var adapter: MovieCatalogRecyclerViewAdapter
     private var listItemView = mutableListOf<BasicItemView>()
-    private var defaultListItemView = mutableListOf<BasicItemView>()
     private var allGenresMovie = mutableListOf<String>()
-    private val switcherGenres = GenresSwitchHelper()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,31 +45,28 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
         //блок жанров
         listItemView.add(headersOne)
         for(i in allGenresMovie){
-            val genresItemView = GenresItemView(i,switcherGenres,apiData)
-            //ЭТО ЛЮТЫЙ КОСТЫЛЬ ДЛЯ ПЕРЕДАЧИ ФИЛЬМОВ. НУЖНО БУДЕТ ИСПРАВЛЯТЬ!!!
-            genresItemView.getMovieList { movies->
-               val newListItemView = mutableListOf<BasicItemView>()
-                for(j in movies){
-                    val movieItemView = MovieItemView(j.name, j.image_url)
-                    newListItemView.add(movieItemView)
-                }
-                adapter.reloadDataAdapter((defaultListItemView+newListItemView) as MutableList<BasicItemView>)
-            }
-            //
+            val genresItemView = GenresItemView(i, false, apiData) //switcherGenres
             listItemView.add(genresItemView)
-
         }
 
         //блок фильмов
         listItemView.add(headersTwo)
-        defaultListItemView = listItemView
 
+        val twt = apiData.films as MutableList<FilmsModel>
+        twt.sortBy { it.localized_name }
+        
+        for(i in twt){
+            if(i.genres.isNotEmpty()){
+                val movieItemView = MovieItemView(i.localized_name, i.image_url)
+                listItemView.add(movieItemView)
+            }
+        }
 
     }
 
     private fun initRecView(apiData: ApiModel){
         initListItemView(apiData)
-        adapter = MovieCatalogRecyclerViewAdapter(listItemView)
+        adapter = MovieCatalogRecyclerViewAdapter(listItemView, allGenresMovie, apiData)
         val mLayoutManager = GridLayoutManager(activity, 2)
         mLayoutManager.spanSizeLookup = object : SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {

@@ -1,5 +1,6 @@
 package com.example.kps.presentation.adapter.movieCatalog.itemView
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kps.R
 import com.example.kps.domain.model.ApiModel
@@ -9,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class GenresItemView constructor(
     private val genresName:String,
-    private val switcher: GenresSwitchHelper, //private
+    private val activeStatusParam:Boolean,
     allFilms: ApiModel
     ):BasicItemView {
 
@@ -29,8 +30,15 @@ class GenresItemView constructor(
         genresViewHolder = viewHolder as MovieCatalogViewHolderFactory.GenresViewHolder
         genresViewHolder.bind(genresName)
 
-        genresViewHolder.itemView.setOnClickListener{
+        if(activeStatusParam){
             setActiveItemView()
+        }
+        else{
+            setNonActiveItemView()
+        }
+
+        genresViewHolder.itemView.setOnClickListener{
+            Log.d("viewPreesItem", concreteGenresFilm.toString())
             getMovieListLiamda?.invoke(concreteGenresFilm)
         }
     }
@@ -46,13 +54,16 @@ class GenresItemView constructor(
         }
     }
 
+    fun getName():String{
+        return genresName
+    }
+
     fun getMovieList(code:((MutableList<FilmsModel>)->Unit)){
         getMovieListLiamda = code
     }
 
     fun setActiveItemView(){
         genresViewHolder.itemView.setBackgroundResource(R.drawable.background_row_active)
-        switcher.replaceActiveGenresItemView(this)
     }
 
     fun setNonActiveItemView(){

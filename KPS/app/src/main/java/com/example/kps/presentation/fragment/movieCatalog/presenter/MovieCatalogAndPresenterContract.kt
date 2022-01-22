@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 
 interface MovieCatalogAndPresenterContract {
     interface IView{
-        fun showMovie(movies:ApiModel)
+        fun showMovie(apiData:ApiModel)
     }
 
     interface IPresenter:CoroutineScope{
