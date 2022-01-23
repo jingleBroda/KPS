@@ -5,4 +5,8 @@
     <string name="genres_deff">Категория</string>
     <string name="header_deff">Заголовок</string>
     <string name="movie_deff">Название Фильма</string>
+    <string name="movie_year">Год:</string>
+    <string name="movie_ranked">Рейтинг:</string>
+    <string name="movie_descript">Описание фильма</string>
+    <string name="toolbar_title_catalog">Главная</string>
 </resources>

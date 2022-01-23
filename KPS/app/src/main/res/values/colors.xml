@@ -10,6 +10,5 @@
     <color name="genres_non_active_itemview_color">#666666</color>
     <color name="genres_active_itemview_color">#C2E4EF</color>
     <color name="background_text_movie">#73000000</color>
-    <color name="toolbar_color">#545454</color>
-
+    <color name="toolbar_color">#303030</color>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.kps.presentation.fragment.movieCatalog.presenter
 
+
 import com.example.kps.domain.model.ApiModel
 import com.example.kps.data.network.ApiHelper
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,6 @@ class MovieCatalogPresenter :MovieCatalogAndPresenterContract.IPresenter {
             result = withContext(Dispatchers.IO){
                 ApiHelper.getApi()?.getAllMovie()?.execute()
             }
-
             if(result != null){
                 if(result!!.isSuccessful){
                     supportGetMovie?.invoke(result!!.body()!!)
