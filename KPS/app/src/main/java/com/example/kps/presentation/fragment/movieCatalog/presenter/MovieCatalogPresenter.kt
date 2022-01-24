@@ -33,5 +33,4 @@ class MovieCatalogPresenter @Inject constructor(private val hookUpAPIUseCase: Ho
         }
         return result
     }
-
 }

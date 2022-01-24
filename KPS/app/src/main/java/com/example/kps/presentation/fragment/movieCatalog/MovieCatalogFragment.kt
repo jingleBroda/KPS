@@ -1,20 +1,15 @@
 package com.example.kps.presentation.fragment.movieCatalog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import androidx.recyclerview.widget.RecyclerView
-import com.example.data.dataKPS.repositoryImpl.RepositoryData
-import com.example.kps.R
-import com.example.kps.databinding.FragmentMoviewCatalogBinding
 import com.example.domain.domainKPS.model.ApiModel
 import com.example.domain.domainKPS.model.FilmsModel
-import com.example.domain.domainKPS.usecase.HookUpAPIUseCase
+import com.example.kps.R
+import com.example.kps.databinding.FragmentMoviewCatalogBinding
 import com.example.kps.presentation.adapter.movieCatalog.MovieCatalogRecyclerViewAdapter
 import com.example.kps.presentation.adapter.movieCatalog.itemView.BasicItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.GenresItemView
@@ -22,7 +17,6 @@ import com.example.kps.presentation.adapter.movieCatalog.itemView.HeaderItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.MovieItemView
 import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogAndPresenterContract
 import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogPresenter
-import com.example.kps.presentation.navigation.navigator
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -65,7 +59,7 @@ class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.
     }
 
     override fun showMovie(apiData: ApiModel) {
-        allGenresMovie = presenter.createGenresList(apiData)
+      allGenresMovie = presenter.createGenresList(apiData)
         initRecView(apiData)
     }
 

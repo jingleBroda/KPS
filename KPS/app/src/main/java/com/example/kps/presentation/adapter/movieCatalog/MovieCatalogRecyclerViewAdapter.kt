@@ -11,7 +11,6 @@ import com.example.kps.presentation.adapter.movieCatalog.itemView.HeaderItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.MovieItemView
 import com.example.kps.presentation.adapter.movieCatalog.viewHolderFactory.MovieCatalogViewHolderFactory
 import com.example.kps.presentation.navigation.Navigator
-import java.io.Serializable
 
 class MovieCatalogRecyclerViewAdapter
     constructor(
