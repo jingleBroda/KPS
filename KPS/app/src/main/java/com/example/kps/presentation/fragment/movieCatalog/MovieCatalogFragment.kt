@@ -1,16 +1,20 @@
 package com.example.kps.presentation.fragment.movieCatalog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.data.dataKPS.repositoryImpl.RepositoryData
 import com.example.kps.R
 import com.example.kps.databinding.FragmentMoviewCatalogBinding
 import com.example.domain.domainKPS.model.ApiModel
 import com.example.domain.domainKPS.model.FilmsModel
+import com.example.domain.domainKPS.usecase.HookUpAPIUseCase
 import com.example.kps.presentation.adapter.movieCatalog.MovieCatalogRecyclerViewAdapter
 import com.example.kps.presentation.adapter.movieCatalog.itemView.BasicItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.GenresItemView
@@ -19,13 +23,16 @@ import com.example.kps.presentation.adapter.movieCatalog.itemView.MovieItemView
 import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogAndPresenterContract
 import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogPresenter
 import com.example.kps.presentation.navigation.navigator
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 
-class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView {
+class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.IView {
 
+    @Inject
+    lateinit var presenter:MovieCatalogPresenter
     private lateinit var binding: FragmentMoviewCatalogBinding
-    private val presenter = MovieCatalogPresenter()
-    private lateinit var adapter: MovieCatalogRecyclerViewAdapter
+    private var adapter: MovieCatalogRecyclerViewAdapter? = null
     private var listItemView = mutableListOf<BasicItemView>()
     private var allGenresMovie = mutableListOf<String>()
 
@@ -41,8 +48,8 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
     override fun onStart() {
         super.onStart()
         presenter.hookUpAPI()
-        presenter.getMovie { movie->
-            showMovie(movie)
+        presenter.getMovie { apiData->
+            showMovie(apiData)
             binding.loadingPageStatus.visibility = View.GONE
             binding.movieRecView.visibility = View.VISIBLE
             binding.toolbarCatalog.visibility = View.VISIBLE
@@ -50,11 +57,11 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         presenter.cancelJob()
-        if(adapter.getActiveItemView() != null){
-            adapter.getActiveItemView()!!.cancelJob()
+        if(adapter?.getActiveItemView() != null){
+            adapter?.getActiveItemView()!!.cancelJob()
         }
+        super.onDestroy()
     }
 
     override fun showMovie(apiData: ApiModel) {
@@ -65,12 +72,19 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
     private fun initRecView(apiData: ApiModel){
         if(listItemView.isEmpty()) {
             initListItemView(apiData)
+            adapter = MovieCatalogRecyclerViewAdapter(listItemView, allGenresMovie,requireContext(),binding)
         }
-        adapter = MovieCatalogRecyclerViewAdapter(listItemView, allGenresMovie,requireContext(),binding)
+        else{
+           adapter?.replaceRootElem(binding)
+        }
+        settingAdapter()
+    }
+
+    private fun settingAdapter(){
         val mLayoutManager = GridLayoutManager(activity, 2)
         mLayoutManager.spanSizeLookup = object : SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when (adapter.getItemViewType(position)) {
+                return when (adapter?.getItemViewType(position)) {
                     BasicItemView.GENRES_ITEM_VIEW->{
                         return 2
                     }

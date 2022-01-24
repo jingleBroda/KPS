@@ -2,32 +2,16 @@ package com.example.kps.presentation.fragment.movieCatalog.presenter
 
 
 import com.example.domain.domainKPS.model.ApiModel
-import com.example.data.dataKPS.network.ApiHelper
-import kotlinx.coroutines.*
-import retrofit2.Response
-import kotlin.coroutines.CoroutineContext
+import com.example.domain.domainKPS.usecase.HookUpAPIUseCase
+import javax.inject.Inject
 
-class MovieCatalogPresenter :MovieCatalogAndPresenterContract.IPresenter {
-
+class MovieCatalogPresenter @Inject constructor(private val hookUpAPIUseCase: HookUpAPIUseCase) :MovieCatalogAndPresenterContract.IPresenter {
     private var supportGetMovie:((ApiModel)->Unit)? = null
-    private var result: Response<ApiModel>? = null
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = job+Dispatchers.Main
 
     override fun hookUpAPI() {
-        launch {
-            result = withContext(Dispatchers.IO){
-                ApiHelper.getApi()?.getAllMovie()?.execute()
-            }
-            if(result != null){
-                if(result!!.isSuccessful){
-                    supportGetMovie?.invoke(result!!.body()!!)
-                }
-            }
-
+        hookUpAPIUseCase.doIt{ apiModel->
+            supportGetMovie?.invoke(apiModel)
         }
-
     }
 
     override fun getMovie(code:(ApiModel)->Unit) {
@@ -35,7 +19,7 @@ class MovieCatalogPresenter :MovieCatalogAndPresenterContract.IPresenter {
     }
 
     override fun cancelJob() {
-        job.cancel()
+        hookUpAPIUseCase.cancelJob()
     }
 
     override fun createGenresList(data: ApiModel): MutableList<String> {

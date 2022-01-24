@@ -1,12 +1,13 @@
 package com.example.kps.presentation.navigation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.kps.R
 import com.example.kps.presentation.fragment.movieCatalog.MovieCatalogFragment
+import dagger.android.support.DaggerAppCompatActivity
 
-class MainActivity : AppCompatActivity(),Navigator {
+class MainActivity : DaggerAppCompatActivity(),Navigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,3 +42,14 @@ class MainActivity : AppCompatActivity(),Navigator {
         onBackPressed()
     }
 }
+
+/*
+   к сожалению я так и не смог разобраться, как сохранять состояние активити при смене ориентации экрана
+   override fun onSaveInstanceState(outState: Bundle) {
+       super.onSaveInstanceState(outState)
+   }
+
+   override fun onViewStateRestored(savedInstanceState: Bundle?) {
+       super.onViewStateRestored(savedInstanceState)
+   }
+    */

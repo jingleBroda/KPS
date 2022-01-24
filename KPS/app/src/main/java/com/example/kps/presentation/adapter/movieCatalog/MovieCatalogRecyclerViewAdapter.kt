@@ -11,13 +11,14 @@ import com.example.kps.presentation.adapter.movieCatalog.itemView.HeaderItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.MovieItemView
 import com.example.kps.presentation.adapter.movieCatalog.viewHolderFactory.MovieCatalogViewHolderFactory
 import com.example.kps.presentation.navigation.Navigator
+import java.io.Serializable
 
 class MovieCatalogRecyclerViewAdapter
     constructor(
         private var typeItemView:MutableList<BasicItemView>,
         private var allGenresMovie:MutableList<String>,
         private val context: Context,
-        private val rootBinding:FragmentMoviewCatalogBinding
+        private var rootBinding:FragmentMoviewCatalogBinding
     ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private  var activeGenres:GenresItemView? = null
@@ -81,6 +82,10 @@ class MovieCatalogRecyclerViewAdapter
 
     fun getActiveItemView():GenresItemView?{
         return activeGenres
+    }
+
+    fun replaceRootElem(binding:FragmentMoviewCatalogBinding){
+        rootBinding = binding
     }
 
     override fun getItemCount(): Int {
