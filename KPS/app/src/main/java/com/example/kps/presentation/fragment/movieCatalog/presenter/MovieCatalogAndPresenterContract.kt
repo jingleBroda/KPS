@@ -8,7 +8,7 @@ interface MovieCatalogAndPresenterContract {
         fun showMovie(apiData: ApiModel)
     }
 
-    interface IPresenter{ //:CoroutineScope{
+    interface IPresenter{
         fun hookUpAPI()
         fun getMovie(code:(ApiModel)->Unit)
         fun cancelJob()

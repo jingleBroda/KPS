@@ -2,7 +2,7 @@ package com.example.kps.presentation.adapter.movieCatalog.itemView
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kps.R
-import com.example.data.dataKPS.network.ApiHelper
+import com.example.data.dataKPS.network.utils.ApiHelper
 import com.example.domain.domainKPS.model.ApiModel
 import com.example.domain.domainKPS.model.FilmsModel
 import com.example.kps.presentation.adapter.movieCatalog.viewHolderFactory.MovieCatalogViewHolderFactory

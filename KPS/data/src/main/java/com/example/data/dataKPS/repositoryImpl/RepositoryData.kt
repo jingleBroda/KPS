@@ -1,7 +1,7 @@
 package com.example.data.dataKPS.repositoryImpl
 
 import android.util.Log
-import com.example.data.dataKPS.network.ApiHelper
+import com.example.data.dataKPS.network.utils.ApiHelper
 import com.example.domain.domainKPS.model.ApiModel
 import com.example.domain.domainKPS.repository.RepositoryDomain
 import kotlinx.coroutines.Dispatchers

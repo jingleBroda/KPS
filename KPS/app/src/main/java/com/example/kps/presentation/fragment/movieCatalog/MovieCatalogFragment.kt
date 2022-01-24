@@ -59,7 +59,7 @@ class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.
     }
 
     override fun showMovie(apiData: ApiModel) {
-      allGenresMovie = presenter.createGenresList(apiData)
+        allGenresMovie = presenter.createGenresList(apiData)
         initRecView(apiData)
     }
 
