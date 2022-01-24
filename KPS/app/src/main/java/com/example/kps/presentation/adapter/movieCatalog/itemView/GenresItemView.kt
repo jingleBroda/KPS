@@ -2,9 +2,9 @@ package com.example.kps.presentation.adapter.movieCatalog.itemView
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kps.R
-import com.example.kps.data.network.ApiHelper
-import com.example.kps.domain.model.ApiModel
-import com.example.kps.domain.model.FilmsModel
+import com.example.data.dataKPS.network.ApiHelper
+import com.example.domain.domainKPS.model.ApiModel
+import com.example.domain.domainKPS.model.FilmsModel
 import com.example.kps.presentation.adapter.movieCatalog.viewHolderFactory.MovieCatalogViewHolderFactory
 import kotlinx.coroutines.*
 import retrofit2.Response
@@ -21,6 +21,7 @@ class GenresItemView constructor(
     private var result: Response<ApiModel>? = null
     private lateinit var genresViewHolder:MovieCatalogViewHolderFactory.GenresViewHolder
     private var getMovieListLiamda:((MutableList<FilmsModel>, Boolean)->Unit)? = null
+    private var setProgresBarLiamda:((Boolean)->Unit)? = null
     private var concreteGenresFilm = mutableListOf<FilmsModel>()
 
     override fun getItemViewType(): Int {
@@ -39,6 +40,7 @@ class GenresItemView constructor(
         }
 
         genresViewHolder.itemView.setOnClickListener{
+            setProgresBarLiamda?.invoke(true)
             getApiData()
         }
     }
@@ -70,10 +72,12 @@ class GenresItemView constructor(
                 if(result!!.isSuccessful){
                     if(activeStatusParam){
                         createFilmsAllGenresCompilation(result!!.body()!!)
+                        setProgresBarLiamda?.invoke(false)
                         getMovieListLiamda?.invoke(concreteGenresFilm, true)
                     }
                     else{
                         createFilmsGenresCompilation(result!!.body()!!)
+                        setProgresBarLiamda?.invoke(false)
                         getMovieListLiamda?.invoke(concreteGenresFilm, false)
                     }
 
@@ -83,12 +87,20 @@ class GenresItemView constructor(
         }
     }
 
+    fun setProgresBar(code:((Boolean)->Unit)){
+        setProgresBarLiamda = code
+    }
+
     fun getName():String{
         return genresName
     }
 
-    fun getMovieList(code:((MutableList<FilmsModel>, Boolean)->Unit)){
+    fun getMovieListOnCLickGenresItemView(code:((MutableList<FilmsModel>, Boolean)->Unit)){
         getMovieListLiamda = code
+    }
+
+    fun cancelJob(){
+        job.cancel()
     }
 
     private fun setActiveItemView(){

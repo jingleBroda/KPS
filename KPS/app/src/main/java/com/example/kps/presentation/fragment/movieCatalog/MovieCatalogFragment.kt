@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.example.kps.R
 import com.example.kps.databinding.FragmentMoviewCatalogBinding
-import com.example.kps.domain.model.ApiModel
-import com.example.kps.domain.model.FilmsModel
+import com.example.domain.domainKPS.model.ApiModel
+import com.example.domain.domainKPS.model.FilmsModel
 import com.example.kps.presentation.adapter.movieCatalog.MovieCatalogRecyclerViewAdapter
 import com.example.kps.presentation.adapter.movieCatalog.itemView.BasicItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.GenresItemView
@@ -35,12 +35,12 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
     ): View {
         val root = inflater.inflate(R.layout.fragment_moview_catalog, container, false)
         binding = FragmentMoviewCatalogBinding.bind(root)
-        presenter.hookUpAPI()
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
+        presenter.hookUpAPI()
         presenter.getMovie { movie->
             showMovie(movie)
             binding.loadingPageStatus.visibility = View.GONE
@@ -52,17 +52,13 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
     override fun onDestroy() {
         super.onDestroy()
         presenter.cancelJob()
-
+        if(adapter.getActiveItemView() != null){
+            adapter.getActiveItemView()!!.cancelJob()
+        }
     }
 
     override fun showMovie(apiData: ApiModel) {
-        for(movie in apiData.films){
-            for (genres in movie.genres) {
-                if (genres !in allGenresMovie) {
-                    allGenresMovie +=genres
-                }
-            }
-        }
+        allGenresMovie = presenter.createGenresList(apiData)
         initRecView(apiData)
     }
 
@@ -70,7 +66,7 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
         if(listItemView.isEmpty()) {
             initListItemView(apiData)
         }
-        adapter = MovieCatalogRecyclerViewAdapter(listItemView, allGenresMovie,requireContext())
+        adapter = MovieCatalogRecyclerViewAdapter(listItemView, allGenresMovie,requireContext(),binding)
         val mLayoutManager = GridLayoutManager(activity, 2)
         mLayoutManager.spanSizeLookup = object : SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -110,9 +106,6 @@ class MovieCatalogFragment : Fragment(), MovieCatalogAndPresenterContract.IView 
         for (i in sortedListFilm) {
             if (i.genres.isNotEmpty()) {
                 val movieItemView = MovieItemView(i)
-                movieItemView.getFragment {
-                    navigator().showNextScreen(it)
-                }
                 listItemView.add(movieItemView)
             }
         }

@@ -1,12 +1,9 @@
 package com.example.kps.presentation.fragment.movieCatalog.presenter
 
 
-import com.example.kps.domain.model.ApiModel
-import com.example.kps.data.network.ApiHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.domain.domainKPS.model.ApiModel
+import com.example.data.dataKPS.network.ApiHelper
+import kotlinx.coroutines.*
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
@@ -39,6 +36,18 @@ class MovieCatalogPresenter :MovieCatalogAndPresenterContract.IPresenter {
 
     override fun cancelJob() {
         job.cancel()
+    }
+
+    override fun createGenresList(data: ApiModel): MutableList<String> {
+        val result = mutableListOf<String>()
+        for(movie in data.films){
+            for (genres in movie.genres) {
+                if (genres !in result) {
+                    result +=genres
+                }
+            }
+        }
+        return result
     }
 
 }

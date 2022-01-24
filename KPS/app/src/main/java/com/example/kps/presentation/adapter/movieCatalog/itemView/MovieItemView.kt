@@ -1,11 +1,11 @@
 package com.example.kps.presentation.adapter.movieCatalog.itemView
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kps.domain.model.FilmsModel
+import com.example.domain.domainKPS.model.FilmsModel
 import com.example.kps.presentation.adapter.movieCatalog.viewHolderFactory.MovieCatalogViewHolderFactory
 import com.example.kps.presentation.fragment.movieInformation.MovieInformationFragment
 
-class MovieItemView(private val movie:FilmsModel):BasicItemView {
+class MovieItemView(private val movie: FilmsModel):BasicItemView {
     private var getFragmentLiamda:((MovieInformationFragment)->Unit)? = null
 
 
@@ -28,7 +28,7 @@ class MovieItemView(private val movie:FilmsModel):BasicItemView {
         }
     }
 
-    fun getFragment(code:(MovieInformationFragment)->Unit){
+    fun moveMovieInformationFragmentOnClickMovieItemView(code:(MovieInformationFragment)->Unit){
         getFragmentLiamda = code
     }
 }
