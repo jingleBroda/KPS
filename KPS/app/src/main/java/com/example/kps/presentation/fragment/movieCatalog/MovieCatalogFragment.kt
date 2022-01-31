@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.example.domain.domainKPS.model.ApiModel
@@ -18,6 +19,7 @@ import com.example.kps.presentation.adapter.movieCatalog.itemView.MovieItemView
 import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogAndPresenterContract
 import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogPresenter
 import dagger.android.support.DaggerFragment
+import java.io.IOException
 import javax.inject.Inject
 
 
@@ -41,9 +43,22 @@ class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.
 
     override fun onStart() {
         super.onStart()
-        presenter.hookUpAPI()
-        presenter.getMovie { apiData->
-            showMovie(apiData)
+
+        if(isReallyOnline()){
+            presenter.hookUpAPI()
+            presenter.getMovie { apiData->
+                showMovie(apiData)
+                binding.loadingPageStatus.visibility = View.GONE
+                binding.movieRecView.visibility = View.VISIBLE
+                binding.toolbarCatalog.visibility = View.VISIBLE
+            }
+        }
+        else{
+            Toast.makeText(
+                requireContext(),
+                "Интернет-соединение отсутствует! Возможно, доступ к интернету ограничен, или он отсутствует.",
+                Toast.LENGTH_LONG
+            ).show()
             binding.loadingPageStatus.visibility = View.GONE
             binding.movieRecView.visibility = View.VISIBLE
             binding.toolbarCatalog.visibility = View.VISIBLE
@@ -117,5 +132,20 @@ class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.
                 listItemView.add(movieItemView)
             }
         }
+    }
+
+    //проверка интернет соединения
+    private fun isReallyOnline(): Boolean {
+        val runtime = Runtime.getRuntime()
+        try {
+            val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+            val exitValue = ipProcess.waitFor()
+            return exitValue == 0
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+        return false
     }
 }
