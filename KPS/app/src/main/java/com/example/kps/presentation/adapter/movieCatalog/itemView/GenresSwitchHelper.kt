@@ -13,7 +13,7 @@ class GenresSwitchHelper() {
         }
         else{
             if(oldAgenresItemViewPressed != genresItemViewPressed) {
-                oldAgenresItemViewPressed?.setNonActiveItemView()
+               // oldAgenresItemViewPressed?.setNonActiveItemView()
                 oldAgenresItemViewPressed = genresItemViewPressed
             }
         }
