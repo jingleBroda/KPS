@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.example.domain.domainKPS.model.ApiModel
@@ -16,17 +19,17 @@ import com.example.kps.presentation.adapter.movieCatalog.itemView.BasicItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.GenresItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.HeaderItemView
 import com.example.kps.presentation.adapter.movieCatalog.itemView.MovieItemView
-import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogAndPresenterContract
-import com.example.kps.presentation.fragment.movieCatalog.presenter.MovieCatalogPresenter
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.flow.collect
 import java.io.IOException
 import javax.inject.Inject
 
 
-class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.IView {
+class MovieCatalogFragment : DaggerFragment() {
 
     @Inject
-    lateinit var presenter:MovieCatalogPresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel:MovieCatalogViewModel
     private lateinit var binding: FragmentMoviewCatalogBinding
     private var adapter: MovieCatalogRecyclerViewAdapter? = null
     private var listItemView = mutableListOf<BasicItemView>()
@@ -38,6 +41,7 @@ class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.
     ): View {
         val root = inflater.inflate(R.layout.fragment_moview_catalog, container, false)
         binding = FragmentMoviewCatalogBinding.bind(root)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[MovieCatalogViewModel::class.java]
         return binding.root
     }
 
@@ -45,12 +49,14 @@ class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.
         super.onStart()
 
         if(isReallyOnline()){
-            presenter.hookUpAPI()
-            presenter.getMovie { apiData->
-                showMovie(apiData)
-                binding.loadingPageStatus.visibility = View.GONE
-                binding.movieRecView.visibility = View.VISIBLE
-                binding.toolbarCatalog.visibility = View.VISIBLE
+            viewModel.hookUpAPI()
+            lifecycleScope.launchWhenCreated {
+                viewModel.supportGetMovie.collect{ apiData->
+                    showMovie(apiData)
+                    binding.loadingPageStatus.visibility = View.GONE
+                    binding.movieRecView.visibility = View.VISIBLE
+                    binding.toolbarCatalog.visibility = View.VISIBLE
+                }
             }
         }
         else{
@@ -66,15 +72,14 @@ class MovieCatalogFragment : DaggerFragment(), MovieCatalogAndPresenterContract.
     }
 
     override fun onDestroy() {
-        presenter.cancelJob()
         if(adapter?.getActiveItemView() != null){
             adapter?.getActiveItemView()!!.cancelJob()
         }
         super.onDestroy()
     }
 
-    override fun showMovie(apiData: ApiModel) {
-        allGenresMovie = presenter.createGenresList(apiData)
+    private fun showMovie(apiData: ApiModel) {
+        allGenresMovie = viewModel.createGenresList(apiData)
         initRecView(apiData)
     }
 
